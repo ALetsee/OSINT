@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  theharvester:
+    build: ./theHarvester
+    container_name: theharvester
+    entrypoint: ["theHarvester"]
+
+  osintgram:
+    build: ./Osintgram
+    container_name: osintgram
+    entrypoint: ["python3", "main.py"]
+
+  blackbird:
+    build: ./blackbird
+    container_name: blackbird
+    entrypoint: ["python3", "blackbird.py"]
+
+  toutatis:
+    build: ./toutatis
+    container_name: toutatis
+    entrypoint: ["toutatis"]
+
+  dorks:
+    build: ./Dorks
+    container_name: dorks
+    entrypoint: ["python3", "dorks.py"]
+
+  sherlock:
+    build: ./Sherlock
+    container_name: sherlock
+    entrypoint: ["python3", "sherlock.py"]
