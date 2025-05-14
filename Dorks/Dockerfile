@@ -4,5 +4,4 @@ WORKDIR /app
 COPY . .
 RUN pip install -r requirements.txt || true
 
-CMD ["python3", "dorks.py"]
-
+CMD ["python3", "dorks.py", "--no-file"]

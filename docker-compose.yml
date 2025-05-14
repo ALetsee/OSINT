@@ -26,7 +26,9 @@ services:
     container_name: dorks
     entrypoint: ["python3", "dorks.py"]
 
-  sherlock:
-    build: ./Sherlock
-    container_name: sherlock
-    entrypoint: ["python3", "sherlock.py"]
+  exiftool:
+    image: exiftool/exiftool
+    container_name: exiftool
+    volumes:
+      - .:/mnt
+    working_dir: /mnt

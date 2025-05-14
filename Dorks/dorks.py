@@ -1,23 +1,123 @@
 import os
-from datetime import datetime
+import sys
+import datetime 
 
 class DorkGenerator:
-    def __init__(self):
-        self.report_folder = "reports"
-        if not os.path.exists(self.report_folder):
-            os.makedirs(self.report_folder)
+    def __init__(self, generate_files=True):
+        self.generate_files = generate_files
+        if generate_files:
+            self.report_folder = "reports"
+            if not os.path.exists(self.report_folder):
+                os.makedirs(self.report_folder)
+        self.clear_screen()
 
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def print_menu(self):
         self.clear_screen()
-        print("\n===== GENERADOR DE DORKS DE BÚSQUEDA =====")
-        print("1. Generar dorks para un usuario")
-        print("2. Generar dorks para un número de teléfono")
-        print("3. Generar dorks para un sitio web")
-        print("4. Salir")
-        return input("\nSeleccione una opción: ")
+
+        additional_ascii = r"""
++++++++++++++++++++@@%%%%%%%%%@@@%%%%%%%%%%%%%%%#++++++
++++++++++++++++++#@@%@@%%%%%%%%%@@@%%%%%%%%%%%%%%%+++++
+++++++++++++++++#@%%@@@%%%@%%%%@%@@%%%%%%%%%%%%%%%#++++
++++++++++++++++*@%%@@%%%%@@%%%%%@%@@@%%%%@@%%%%%%%@#+++
++++++++++++++++@%%%@@%%%@@@%%%%%%@%@@@%%%%@%%%%%%%%@*++
+++++++++++++++@%%%@@%%%%@@@@%%%%%%%%@@%%%%%%%%%%%%%%@*+
++++++++++++++*@@@@@%%%@@@@@@%%%%%@%%%@@%%%%%@@@%%%%%%@+
+++++++++++++%@@@@@@%@@@@*@@*@@%@%@%%%@@@%%%%@@@@%%%%%@%
+++++++++++*#+@@@@@@@@@@@*@%*@%@@@@@@@@@@%@@%%@@@%%%%%@@
++++++++****+++##@@@@@%@@*%@#*@@@@%@@@@@@%%@%@%@@@%%%%@@
++++++++***+****##@@%@@@@#*@%+@@%@%%%@@@@%%@@%%@@@%%%@@@
++++++++*+*+*+##*+#@%%%%*++#*+%%%%@%%%@@@%%%@@@@@@@@%@@@
++++++*+#*+***##***@##@@@@+++++++++++***@%%%%@@@@@@@@@@@
+++++++#*#*##*#+#+*@@%+@@@@#+++++++*#%##@@%%%@@@@@@@@@@@
++++++++*+*#*+#*#*@@@*****+++++++++++*%%%@@%%%@@@@@@@@@@
++++++++*++++++*+*@%%@+++++++++++++++++++#@%%%%@@@@@@@@@
++++++++++###**+#@@%%@+++++++++++++++++++@@@@@%%@@@@@@@@
++++++++++++#%%@@@@@@@@+++++++++++++++++%@%@@@@@%@@@@@@%
++++++++++++#@@%@@@@@@@@++++*#####*+++*@%@@@@@@@@%@@@@@*
+++++#+++++@@@@@@@@@@@@@@@*+++#*+++*@@@@@%%@@@@@@@%@@@%+
++++++%%@@@%++*%@@@@@@%@@@@@%+++++*#*%%%%%@@@@@@@@@@@@*#
++++++++%@++++++++*#@@%@@@@@@#******@%%%%@@@@@@@@%@@@%@+
+++++*@@@++++++++++*#@%@@@@@@@##*#*@%*@%%@@@@@@@@@@@%%@%
++%*@@@@@+++++++++++@@%@@@@@@@@#*++@%+@@@@@@@@@@@@@@%%%%
++%%@%@@@++++++++++@@%%@@@@@@@@@+++@*+%@@@@%@@@@@@@%@%@%
++++%@@@@+++++++*@%@%%%@%@@@@#*@@++@#**%@@@@@@@@@@@@@@%%
+++++@@@@#+++****@%%%@@%@@@@+++*@*++@@@@@%@@@@@@@@@@@@%%
+@%%@@@%@%++++++@%%@%%%@@@@@*++@@+++@@@*++*%@@@@@@@@@@@@
++*@@@@%@@+++++%%%@%%@@@@@@@%*++*++@@+*+*+*+@@@@@@@@@@%%
+@@%%%@@@@++++*%@@@%@@@%@@@@@@%+*#%@%++++++#@@@@@@@@@@@%
+"""
+        
+        print(additional_ascii)
+        print("\n===== GENERADOR DE DORKS =====")
+
+        menu_options = [
+            "1. Username",
+            "2. Phone",
+            "3. Web site",
+            "4. Help",
+            "5. Exit"
+        ]
+        
+        for option in menu_options:
+            print(option)
+        return input("\n>")
+
+    def show_help(self):
+        self.clear_screen()
+        help_text = """
+===== AYUDA DEL GENERADOR DE DORKS =====
+
+Genera dorks personalizados para Google, Bing, Yandex y DuckDuckGo
+en base a un objetivo (username, número de teléfono o sitio web).
+
+--- OPCIONES DISPONIBLES ---
+
+1. Username:
+   Genera dorks para buscar un nombre de usuario en múltiples redes sociales, archivos, perfiles, etc.
+
+2. Phone:
+   Busca números de teléfono en sitios como Truecaller, documentos PDF, redes sociales, etc.
+
+3. Web site:
+   Busca vulnerabilidades o configuraciones en sitios web.
+
+--- PARÁMETROS AVANZADOS ---
+
+* Restricción por fecha:
+  Puedes limitar los resultados con fechas usando:
+    - after:YYYY-MM-DD (después de una fecha)
+    - before:YYYY-MM-DD (antes de una fecha)
+    - after:YYYY-MM-DD before:YYYY-MM-DD (entre fechas)
+
+  Estos se adaptan según el motor de búsqueda:
+    - Google usa: `before:` y `after:`
+    - Yandex usa: `date:<` y `date:>`
+    - Bing usa: `daterange:`
+    - DuckDuckGo: no siempre interpreta fechas correctamente
+
+* Exclusión de términos:
+  Puedes excluir palabras o números de los resultados usando el prefijo `-` (o `!` en Yandex).
+
+  Ejemplo:
+    site:facebook.com "Username" -1234 -test -demo
+    Esto excluirá resultados que contengan "1234", "test" o "demo".
+
+--- EJEMPLO COMPLETO ---
+
+Username: Username
+Fecha: después del 2022-01-01
+Exclusiones: test, demo
+
+Resultado en Google:
+  site:twitter.com "Username" after:2022-01-01 -test -demo
+
+Pulsa ENTER para volver al menú...
+"""
+        print(help_text)
+        input(">")
 
     def generate_google_dorks(self, target, exclusions, params, target_type):
         dorks = []
@@ -180,41 +280,16 @@ class DorkGenerator:
 
         return dorks
 
-    def create_report(self, target, google_dorks, yandex_dorks, bing_dorks, duckduckgo_dorks):
-        now = datetime.now()
-        date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"{self.report_folder}/dorks_{target}_{date_str}.txt"
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"==== DORKS PARA: {target} ====\n")
-            f.write(f"Fecha: {now.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-
-            f.write("=== GOOGLE DORKS ===\n")
-            for i, dork in enumerate(google_dorks, 1):
-                f.write(f"{i}. {dork}\n")
-
-            f.write("\n=== YANDEX DORKS ===\n")
-            for i, dork in enumerate(yandex_dorks, 1):
-                f.write(f"{i}. {dork}\n")
-
-            f.write("\n=== BING DORKS ===\n")
-            for i, dork in enumerate(bing_dorks, 1):
-                f.write(f"{i}. {dork}\n")
-
-            f.write("\n=== DUCKDUCKGO DORKS ===\n")
-            for i, dork in enumerate(duckduckgo_dorks, 1):
-                f.write(f"{i}. {dork}\n")
-
-        print(f"\nReporte guardado como: {filename}")
-        return filename
-
     def add_parameters(self):
         params = ""
         exclusions = []
 
         print("\n--- AÑADIR PARÁMETROS ---")
-        add_date = input("¿Desea añadir restricción de fecha? (s/n): ").lower()
-        if add_date == 's':
-            date_type = input("\nTipo de restricción:\n1. Antes de una fecha\n2. Después de una fecha\n3. Entre fechas\nSeleccione: ")
+        add_date = input("¿Desea añadir restricción de fecha? (s/n): ")
+        if add_date.lower() == 's':
+            date_options = "\nTipo de restricción:\n1. Antes de una fecha\n2. Después de una fecha\n3. Entre fechas"
+            print(date_options)
+            date_type = input("Seleccione: ")
             if date_type == '1':
                 date = input("Introduzca fecha (YYYY-MM-DD): ")
                 params = f"before:{date}"
@@ -226,65 +301,79 @@ class DorkGenerator:
                 date_before = input("Fecha de fin (YYYY-MM-DD): ")
                 params = f"after:{date_after} before:{date_before}"
 
-        if input("\n¿Desea añadir términos de exclusión? (s/n): ").lower() == 's':
-            for i in range(int(input("¿Cuántos términos desea excluir? "))):
+        if input("\n¿Desea añadir términos de exclusión? (s/n) > ").lower() == 's':
+            num_terms = int(input("¿Cuántos términos desea excluir? "))
+            for i in range(num_terms):
                 term = input(f"Término {i+1} a excluir: ")
                 if term:
                     exclusions.append(term)
 
         return params, exclusions
 
+    def generate_dorks_for_target(self, target, target_type):
+        params, exclusions = self.add_parameters()
+
+        google_dorks = self.generate_google_dorks(target, exclusions, params, target_type)
+        yandex_dorks = self.generate_yandex_dorks(target, exclusions, params, target_type)
+        bing_dorks = self.generate_bing_dorks(target, exclusions, params, target_type)
+        duckduckgo_dorks = self.generate_duckduckgo_dorks(target, exclusions, params, target_type)
+
+        print("\n=== DORKS GENERADOS ===\n")
+        print("--- Google Dorks ---")
+        for dork in google_dorks:
+            print(dork)
+
+        print("\n--- Yandex Dorks ---")
+        for dork in yandex_dorks:
+            print(dork)
+
+        print("\n--- Bing Dorks ---")
+        for dork in bing_dorks:
+            print(dork)
+
+        print("\n--- DuckDuckGo Dorks ---")
+        for dork in duckduckgo_dorks:
+            print(dork)
+
+        if self.generate_files:
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = os.path.join(self.report_folder, f"dorks_{timestamp}.txt")
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write("=== DORKS GENERADOS ===\n\n")
+                f.write("--- Google Dorks ---\n")
+                f.write("\n".join(google_dorks) + "\n\n")
+                f.write("--- Yandex Dorks ---\n")
+                f.write("\n".join(yandex_dorks) + "\n\n")
+                f.write("--- Bing Dorks ---\n")
+                f.write("\n".join(bing_dorks) + "\n\n")
+                f.write("--- DuckDuckGo Dorks ---\n")
+                f.write("\n".join(duckduckgo_dorks) + "\n")
+
+        input("\n > ")
+
     def run(self):
         while True:
-            choice = self.print_menu()
+            option = self.print_menu()
 
-            if choice == '4':
-                print("\n¡Hasta pronto!")
+            if option == '1':
+                target = input("\nEnter username >")
+                self.generate_dorks_for_target(target, 1)
+            elif option == '2':
+                target = input("\nEnter phone number >")
+                self.generate_dorks_for_target(target, 2)
+            elif option == '3':
+                target = input("\nEnter target (website) >")
+                self.generate_dorks_for_target(target, 3)
+            elif option == '4':
+                self.show_help()
+            elif option == '5':
+                print("\nExit")
                 break
-
-            if choice in ['1', '2', '3']:
-                target_type = int(choice)
-                target = input("\nIntroduzca objetivo: ")
-                if not target:
-                    print("Error: Debe introducir un objetivo válido.")
-                    input("\nPresione Enter para continuar...")
-                    continue
-
-                add_params = input("\n¿Desea añadir parámetros adicionales? (s/n): ").lower()
-                params, exclusions = self.add_parameters() if add_params == 's' else ("", [])
-
-                google_dorks = self.generate_google_dorks(target, exclusions, params, target_type)
-                yandex_dorks = self.generate_yandex_dorks(target, exclusions, params, target_type)
-                bing_dorks = self.generate_bing_dorks(target, exclusions, params, target_type)
-                duckduckgo_dorks = self.generate_duckduckgo_dorks(target, exclusions, params, target_type)
-
-                print("\n--- RESULTADOS ---")
-                print(f"\nGoogle Dorks: {len(google_dorks)} generados")
-                print(f"Yandex Dorks: {len(yandex_dorks)} generados")
-                print(f"Bing Dorks: {len(bing_dorks)} generados")
-                print(f"DuckDuckGo Dorks: {len(duckduckgo_dorks)} generados")
-
-                print("\nEjemplos de dorks generados:")
-                print("\nGoogle:", google_dorks[0])
-                print("Yandex:", yandex_dorks[0])
-                print("Bing:", bing_dorks[0])
-                print("DuckDuckGo:", duckduckgo_dorks[0])
-
-                report_file = self.create_report(target, google_dorks, yandex_dorks, bing_dorks, duckduckgo_dorks)
-
-                if input("\n¿Desea abrir el archivo de reporte? (s/n): ").lower() == 's':
-                    if os.name == 'nt':
-                        os.system(f'start {report_file}')
-                    else:
-                        if os.system(f'xdg-open "{report_file}"') != 0:
-                            os.system(f'less "{report_file}"')
-
-                input("\nPresione Enter para continuar...")
             else:
-                print("Opción no válida. Intente de nuevo.")
-                input("\nPresione Enter para continuar...")
+                print("\n Opción inválida")
+                input(">")
 
 if __name__ == "__main__":
-    generator = DorkGenerator()
-    generator.run()
-
+    generate_files = "--no-file" not in sys.argv
+    dork_generator = DorkGenerator(generate_files=generate_files)
+    dork_generator.run()
